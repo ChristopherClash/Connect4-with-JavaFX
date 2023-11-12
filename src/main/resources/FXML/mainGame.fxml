@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox fx:id="VBox" alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.connect4.connect4javafx.Connect4">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <Text fx:id="mainGameTitleText" strokeType="OUTSIDE" strokeWidth="0.0" text="Connect-4">
+      <font>
+         <Font name="Calibri Bold" size="75.0" />
+      </font>
+   </Text>
+   <Button fx:id="mainGamePlayAgainButton" mnemonicParsing="false" onAction="#mainGamePlayAgainButtonPressed" text="Play again" visible="false" />
+   <Text fx:id="CurrentTurnText" strokeType="OUTSIDE" strokeWidth="0.0" text="It's Player 1's turn...">
+      <font>
+         <Font name="Calibri" size="26.0" />
+      </font></Text>
+   <Text fx:id="mainGameInvalidMoveText" strokeType="OUTSIDE" strokeWidth="0.0" text="Invalid move - that column is full!" visible="false">
+      <font>
+         <Font name="Calibri" size="14.0" />
+      </font>
+   </Text>
+    <GridPane fx:id="MainGameGridPane" alignment="CENTER" gridLinesVisible="true">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="30.0" prefHeight="40.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="-Infinity" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <Button fx:id="Column0Button" alignment="CENTER" mnemonicParsing="false" onAction="#column0ButtonPress" text="Select" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column1Button" alignment="CENTER" mnemonicParsing="false" onAction="#column1ButtonPress" text="Select" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column2Button" alignment="CENTER" mnemonicParsing="false" onAction="#Column2ButtonPressed" text="Select" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column3Button" alignment="CENTER" mnemonicParsing="false" onAction="#Column3ButtonPressed" text="Select" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column4Button" alignment="CENTER" mnemonicParsing="false" onAction="#Column4ButtonPressed" text="Select" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column5Button" alignment="CENTER" mnemonicParsing="false" onAction="#Column5ButtonPressed" text="Select" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column6Button" alignment="CENTER" mnemonicParsing="false" onAction="#Column6ButtonPressed" text="Select" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+    </GridPane>
+</VBox>
