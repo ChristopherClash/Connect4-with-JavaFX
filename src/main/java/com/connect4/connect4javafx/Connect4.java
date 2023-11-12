@@ -189,12 +189,12 @@ public class Connect4 extends Application {
 
     private int checkDiagonals(){
         int[][] gameArray = getMainGameGridPaneArray();
-        int checkBottomLeftToTopRightResult = checkBottomLeftToTopRight(gameArray);
+        int checkTopRightToBottomLeftResult = checkTopRightToBottomLeft(gameArray);
         int checkTopLeftToBottomRightResult = checkTopLeftToBottomRight(gameArray);
-        if (checkTopLeftToBottomRightResult == 1 || checkBottomLeftToTopRightResult == 1){
+        if (checkTopLeftToBottomRightResult == 1 || checkTopRightToBottomLeftResult == 1){
             return 1;
         }
-        else if (checkTopLeftToBottomRightResult == 2 || checkBottomLeftToTopRightResult == 2){
+        else if (checkTopLeftToBottomRightResult == 2 || checkTopRightToBottomLeftResult == 2){
             return 2;
         }
         return 0;
@@ -220,7 +220,23 @@ public class Connect4 extends Application {
         return 0;
     }
 
-    private int checkBottomLeftToTopRight(int[][] gameArray) {
+    private int checkTopRightToBottomLeft(int[][] gameArray) {
+        for (int columnNo = NO_OF_COLUMNS - 1; columnNo >= 3; columnNo--){
+            for (int rowNo = 0; rowNo <= NO_OF_ROWS - 4; rowNo++){
+                Set<Integer> checkCurrentDiagonalSet = new HashSet<>();
+                for (int offset = 0; offset < 4; offset++) {
+                    checkCurrentDiagonalSet.add(gameArray[columnNo - offset][rowNo + offset]);
+                }
+                if (checkCurrentDiagonalSet.size() == 1){
+                    if (checkCurrentDiagonalSet.contains(1)){
+                        return 1;
+                    }
+                    else if (checkCurrentDiagonalSet.contains(2)){
+                        return 2;
+                    }
+                }
+            }
+        }
         return 0;
     }
 
@@ -231,12 +247,21 @@ public class Connect4 extends Application {
         switch (gameResult) {
             case 0:
                 mainGameTitleText.setText("It's a draw!");
+                System.out.println("Game ended in draw");
+                System.out.println("Player 1 took " + player1TotalTokens + " turns");
+                System.out.println("Player 2 took " + player2TotalTokens + " turns");
                 break;
             case 1:
                 mainGameTitleText.setText("Player 1 wins!");
+                System.out.println("Game ended in player 1 victory");
+                System.out.println("Player 1 took " + player1TotalTokens + " turns");
+                System.out.println("Player 2 took " + player2TotalTokens + " turns");
                 break;
             case 2:
                 mainGameTitleText.setText("Player 2 wins!");
+                System.out.println("Game ended in player 2 victory");
+                System.out.println("Player 1 took " + player1TotalTokens + " turns");
+                System.out.println("Player 2 took " + player2TotalTokens + " turns");
                 break;
         }
     }
