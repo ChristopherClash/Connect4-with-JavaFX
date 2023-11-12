@@ -1,7 +1,6 @@
 package com.connect4.connect4javafx;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,7 +12,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +28,7 @@ public class Connect4 extends Application {
     private int lowestPlayableRow = -1;
     private int player1TotalTokens = 0;
     private int player2TotalTokens = 0;
-    private final int[][] mainGameGridPaneArray = new int[NO_OF_ROWS][NO_OF_COLUMNS];
+    private final int[][] mainGameGridPaneArray = new int[NO_OF_COLUMNS][NO_OF_ROWS];
     private String currentPlayer = "Player1";
 
     public GridPane MainGameGridPane;
@@ -62,8 +60,8 @@ public class Connect4 extends Application {
     }
 
     private void initialiseArray(){
-        for (int i = 0; i < NO_OF_ROWS; i++){
-            for (int j = 0; j < NO_OF_COLUMNS; j++){
+        for (int i = 0; i < NO_OF_COLUMNS; i++){
+            for (int j = 0; j < NO_OF_ROWS; j++){
                 mainGameGridPaneArray[i][j] = 0;
             }
         }
@@ -86,14 +84,14 @@ public class Connect4 extends Application {
                 int player1TotalTokens = getPlayer1TotalTokens();
                 createCircleAtNode("Player1", Color.BLUE, player1TotalTokens, column, row);
                 setPlayer1TotalTokens(player1TotalTokens + 1);
-                mainGameGridPaneArray[row - 1][column] = 1;
+                mainGameGridPaneArray[column][row - 1] = 1;
                 setCurrentPlayer("Player2");
                 CurrentTurnText.setText(("It's Player 2's turn..."));
             } else if (currentPlayer.equals("Player2")){
                 int player2TotalTokens = getPlayer2TotalTokens();
                 createCircleAtNode("Player2", Color.RED, player2TotalTokens, column, row);
                 setPlayer2TotalTokens(player2TotalTokens + 1);
-                mainGameGridPaneArray[row - 1][column] = 2;
+                mainGameGridPaneArray[column][row - 1] = 2;
                 setCurrentPlayer("Player1");
                 CurrentTurnText.setText(("It's Player 1's turn..."));
             }
@@ -108,7 +106,7 @@ public class Connect4 extends Application {
 
     private int findLowestPlayableRow(int selectedColumn) {
         for (int currentRow = MainGameGridPane.getRowCount() - 1; currentRow > 0; currentRow--) {
-            if (mainGameGridPaneArray[currentRow - 1][selectedColumn] == 0){
+            if (mainGameGridPaneArray[selectedColumn][currentRow - 1] == 0){
                 return currentRow;
             }
         }
@@ -138,8 +136,8 @@ public class Connect4 extends Application {
     //If no slots are left and the other win conditions have not been met, the game has ended in a draw
     private boolean checkDraw(){
         int[][] gameArray = getMainGameGridPaneArray();
-        for (int i = 0; i < NO_OF_ROWS; i++){
-            for (int j = 0; j < NO_OF_COLUMNS; j++){
+        for (int i = 0; i < NO_OF_COLUMNS; i++){
+            for (int j = 0; j < NO_OF_ROWS; j++){
                 if (gameArray[i][j] == 0){
                     return false;
                 }
@@ -149,13 +147,12 @@ public class Connect4 extends Application {
     }
     private int checkRows(){
         int[][] gameArray = getMainGameGridPaneArray();
-        for (int i = 0; i < NO_OF_ROWS; i++){
-            for (int j = 0; j < NO_OF_COLUMNS - 3; j++){
+        for (int rowNo = 0; rowNo < NO_OF_ROWS; rowNo++){
+            for (int columnNo = 0; columnNo < NO_OF_COLUMNS - 3; columnNo++){
                 Set<Integer> checkRowSet = new HashSet<>();
-                checkRowSet.add(gameArray[i][j]);
-                checkRowSet.add(gameArray[i][j + 1]);
-                checkRowSet.add(gameArray[i][j + 2]);
-                checkRowSet.add(gameArray[i][j + 3]);
+                for (int offset = 0; offset < 4; offset++){
+                    checkRowSet.add(gameArray[columnNo + offset][rowNo]);
+                }
                 if (checkRowSet.size() == 1){
                     if (checkRowSet.contains(1)){
                         return 1;
@@ -171,13 +168,12 @@ public class Connect4 extends Application {
 
     private int checkColumns() {
         int[][] gameArray = getMainGameGridPaneArray();
-        for (int j = 0; j < NO_OF_COLUMNS; j++){
-            for (int i = NO_OF_ROWS - 1; i >= NO_OF_ROWS/2 ; i--){
+        for (int columnNo = 0; columnNo < NO_OF_COLUMNS; columnNo++){
+            for (int rowNo = NO_OF_ROWS - 1; rowNo >= NO_OF_ROWS/2 ; rowNo--){
                 Set<Integer> checkColumnSet = new HashSet<>();
-                checkColumnSet.add(gameArray[i][j]);
-                checkColumnSet.add(gameArray[i - 1][j]);
-                checkColumnSet.add(gameArray[i - 2][j]);
-                checkColumnSet.add(gameArray[i - 3][j]);
+                for (int offset = 0; offset < 4; offset++){
+                    checkColumnSet.add(gameArray[columnNo][rowNo - offset]);
+                }
                 if (checkColumnSet.size() == 1){
                     if (checkColumnSet.contains(1)){
                         return 1;
@@ -193,76 +189,39 @@ public class Connect4 extends Application {
 
     private int checkDiagonals(){
         int[][] gameArray = getMainGameGridPaneArray();
-        int checkBotLeftToTopRightResult = checkTopRowLeftColumn(gameArray);
-        //int checkBotRightToTopLeftResult = checkBottomRowRightColumn(gameArray);
-        if (checkBotLeftToTopRightResult != -1){
-            return  checkBotLeftToTopRightResult;
+        int checkBottomLeftToTopRightResult = checkBottomLeftToTopRight(gameArray);
+        int checkTopLeftToBottomRightResult = checkTopLeftToBottomRight(gameArray);
+        if (checkTopLeftToBottomRightResult == 1 || checkBottomLeftToTopRightResult == 1){
+            return 1;
         }
-        //else if (checkBotRightToTopLeftResult != -1){
-        //    return checkBotRightToTopLeftResult;
-        //}
-        return -1;
-    }
-
-    private int checkDiagonalSets(int column, int row, int[][] gameArray){
-        Set<Integer> checkingSet = new HashSet<>();
-        checkingSet.add(gameArray[row][column]);
-        checkingSet.add(gameArray[row + 1][column - 1]);
-        checkingSet.add(gameArray[row + 2][column - 2]);
-        checkingSet.add(gameArray[row + 3][column - 3]);
-        if (checkingSet.size() == 1){
-            if (checkingSet.contains(1)){
-                return 1;
-            }
-            else if (checkingSet.contains(2)){
-                return 2;
-            }
+        else if (checkTopLeftToBottomRightResult == 2 || checkBottomLeftToTopRightResult == 2){
+            return 2;
         }
-        return -1;
+        return 0;
     }
 
-    //Check for diagonals that connect the top row to the rightmost column
-    private int checkTopRowRightColumn(int[][] gameArray){
-        return -1;
-    }
-
-    //Check for diagonals that connect the bottom row to the rightmost column
-    private int checkBottomRowRightColumn(int[][] gameArray){
-        for (int column = 1; column < 3; column++){
-            int row = column;
-            int currentColumn = NO_OF_COLUMNS - 1;
-            while ((row + 3 < NO_OF_ROWS && currentColumn - 3 >= 0)){
-                int hasWinnerBeenFound = checkDiagonalSets(currentColumn, row, gameArray);
-                if (hasWinnerBeenFound != -1){
-                    return hasWinnerBeenFound;
-                }
-                currentColumn--;
-                row++;
+    private int checkTopLeftToBottomRight(int[][] gameArray) {
+        for (int columnNo = 0; columnNo <= NO_OF_COLUMNS - 4; columnNo++){
+            for (int rowNo = 0; rowNo <= NO_OF_ROWS - 4; rowNo++){
+               Set<Integer> checkCurrentDiagonalSet = new HashSet<>();
+               for (int offset = 0; offset < 4; offset++) {
+                   checkCurrentDiagonalSet.add(gameArray[columnNo + offset][rowNo + offset]);
+               }
+               if (checkCurrentDiagonalSet.size() == 1){
+                   if (checkCurrentDiagonalSet.contains(1)){
+                       return 1;
+                   }
+                   else if (checkCurrentDiagonalSet.contains(2)){
+                       return 2;
+                   }
+               }
             }
         }
-        return -1;
+        return 0;
     }
 
-    //Check for diagonals that connect the bottom row to the leftmost column
-    private int checkBottomRowLeftColumn(int[][] gameArray){
-        return -1;
-    }
-
-    //Check for diagonals that connect the top row to the leftmost column
-    private int checkTopRowLeftColumn(int[][] gameArray){
-        for (int column = 3; column < NO_OF_COLUMNS; column++){
-            int row = 1;
-            int currentColumn = column;
-            while (currentColumn - 3 >= 0 && row + 3 < NO_OF_ROWS) {
-                int hasWinnerBeenFound = checkDiagonalSets(currentColumn, row, gameArray);
-                if (hasWinnerBeenFound != -1) {
-                    return hasWinnerBeenFound;
-                }
-                row++;
-                currentColumn--;
-            }
-        }
-        return -1;
+    private int checkBottomLeftToTopRight(int[][] gameArray) {
+        return 0;
     }
 
     private void showEndOfGame(int gameResult){
@@ -297,47 +256,47 @@ public class Connect4 extends Application {
     }
 
     @FXML
-    private void mainGamePlayAgainButtonPressed(ActionEvent actionEvent) {
+    private void mainGamePlayAgainButtonPressed() {
         cleanup();
     }
     @FXML
-    private void column0ButtonPress(ActionEvent actionEvent) {
+    private void column0ButtonPress() {
         setSelectedColumn(0);
         takeTurn();
     }
 
     @FXML
-    private void column1ButtonPress(ActionEvent actionEvent) {
+    private void column1ButtonPress() {
         setSelectedColumn(1);
         takeTurn();
     }
 
     @FXML
-    private void Column2ButtonPressed(ActionEvent actionEvent) {
+    private void Column2ButtonPressed() {
         setSelectedColumn(2);
         takeTurn();
     }
 
     @FXML
-    private void Column3ButtonPressed(ActionEvent actionEvent) {
+    private void Column3ButtonPressed() {
        setSelectedColumn(3);
        takeTurn();
     }
 
     @FXML
-    private void Column4ButtonPressed(ActionEvent actionEvent) {
+    private void Column4ButtonPressed() {
         setSelectedColumn(4);
         takeTurn();
     }
 
     @FXML
-    private void Column5ButtonPressed(ActionEvent actionEvent) {
+    private void Column5ButtonPressed() {
        setSelectedColumn(5);
        takeTurn();
     }
 
     @FXML
-    private void Column6ButtonPressed(ActionEvent actionEvent) {
+    private void Column6ButtonPressed() {
         setSelectedColumn(6);
         takeTurn();
     }
