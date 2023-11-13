@@ -59,6 +59,9 @@ public class Connect4 extends Application {
         }
     }
 
+    /**
+     * Initialise the game array, filling each slot with a placeholder 0.
+     */
     private void initialiseArray(){
         for (int i = 0; i < NO_OF_COLUMNS; i++){
             for (int j = 0; j < NO_OF_ROWS; j++){
@@ -66,6 +69,15 @@ public class Connect4 extends Application {
             }
         }
     }
+
+    /**
+     * Draws a circle at the given column, row in the given colour.
+     * @param currentPlayer - string representing the current player, either "player1" or "player2"
+     * @param playerColour - Color object, blue for player 1 and red for player 2
+     * @param currentPlayerTotalTokens - total number of tokens played so far by that player
+     * @param column - current column for token placement
+     * @param row - current row for token placement
+     */
     private void createCircleAtNode(String currentPlayer, Color playerColour, int currentPlayerTotalTokens, int column, int row){
         Circle circleToken = new Circle(50);
         circleToken.setFill(playerColour);
@@ -73,6 +85,10 @@ public class Connect4 extends Application {
         MainGameGridPane.add(circleToken,column, row);
     }
 
+
+    /**
+     *
+     */
     private void takeTurn(){
         mainGameInvalidMoveText.setVisible(false);
         int column = getSelectedColumn();
@@ -104,6 +120,11 @@ public class Connect4 extends Application {
             mainGameInvalidMoveText.setText("Error - that column is full!");}
     }
 
+    /**
+     *
+     * @param selectedColumn - the column chosen by the player
+     * @return the lowest row in that column where a token has not been played
+     */
     private int findLowestPlayableRow(int selectedColumn) {
         for (int currentRow = MainGameGridPane.getRowCount() - 1; currentRow > 0; currentRow--) {
             if (mainGameGridPaneArray[selectedColumn][currentRow - 1] == 0){
@@ -113,6 +134,11 @@ public class Connect4 extends Application {
         //If column is full, return -1
         return -1;
     }
+
+    /**
+     * Calls each of the win condition checking functions.
+     * If a winning condition has been met, call the end game screen
+     */
     private void checkGameWin() {
         int checkColumnsResult = checkColumns();
         int checkRowsResult = checkRows();
@@ -132,8 +158,12 @@ public class Connect4 extends Application {
         }
     }
 
-    //Check if there are any remaining slots in the array that haven't been filled
-    //If no slots are left and the other win conditions have not been met, the game has ended in a draw
+    /**
+     * Checks each array index, if a 0 is found then the board is not full,
+     * so a draw has not been reached
+     * @return true if there are no empty slots (i.e. slots containing 0) in the array,
+     * return false
+     */
     private boolean checkDraw(){
         int[][] gameArray = getMainGameGridPaneArray();
         for (int i = 0; i < NO_OF_COLUMNS; i++){
@@ -143,8 +173,15 @@ public class Connect4 extends Application {
                 }
             }
         }
+        // Return true if there are no empty slots left
         return true;
     }
+
+    /**
+     * Check if there are any winning rows.
+     * @return 1 if player 1 has a winning row, or 2 if player two has a winning row.
+     * If neither has won return 0.
+     */
     private int checkRows(){
         int[][] gameArray = getMainGameGridPaneArray();
         for (int rowNo = 0; rowNo < NO_OF_ROWS; rowNo++){
@@ -166,6 +203,11 @@ public class Connect4 extends Application {
         return 0;
     }
 
+    /**
+     *
+     * @return 1 if player 1 has a winning column, or 2 if player two has a winning column.
+     * If neither has won return 0.
+     */
     private int checkColumns() {
         int[][] gameArray = getMainGameGridPaneArray();
         for (int columnNo = 0; columnNo < NO_OF_COLUMNS; columnNo++){
@@ -187,6 +229,11 @@ public class Connect4 extends Application {
         return 0;
     }
 
+    /**
+     *
+     * @return 1 if player 1 has a winning diagonal, or 2 if player two has a winning diagonal.
+     *If neither has won return 0.
+     */
     private int checkDiagonals(){
         int[][] gameArray = getMainGameGridPaneArray();
         int checkTopRightToBottomLeftResult = checkTopRightToBottomLeft(gameArray);
@@ -200,6 +247,12 @@ public class Connect4 extends Application {
         return 0;
     }
 
+    /**
+     *
+     * @param gameArray the array of the game board
+     * @return 1 if player 1 has a winning diagonal, 2 if player 2 has a winning diagonal
+     * Return 0 if neither has a winning diagonal
+     */
     private int checkTopLeftToBottomRight(int[][] gameArray) {
         for (int columnNo = 0; columnNo <= NO_OF_COLUMNS - 4; columnNo++){
             for (int rowNo = 0; rowNo <= NO_OF_ROWS - 4; rowNo++){
@@ -220,6 +273,12 @@ public class Connect4 extends Application {
         return 0;
     }
 
+    /**
+     * Checks for winning diagonals in the top right to bottom left direction, (i.e. 2 o'clock to 7 o'clock direction)
+     * @param gameArray the array of the game board
+     * @return 1 of player 1 has met a winning diagonal, 2 if player 2 has a winning diagonal.
+     * 0 if neither player has a winning diagonal
+     */
     private int checkTopRightToBottomLeft(int[][] gameArray) {
         for (int columnNo = NO_OF_COLUMNS - 1; columnNo >= 3; columnNo--){
             for (int rowNo = 0; rowNo <= NO_OF_ROWS - 4; rowNo++){
@@ -240,31 +299,41 @@ public class Connect4 extends Application {
         return 0;
     }
 
+    /**
+     * Sets the main title text to show the game winner
+     * @param gameResult the result from checkGameWin(), 1 represents a player 1 win,
+     * 2 represents a player 2 win and 0 represents a draw
+     */
     private void showEndOfGame(int gameResult){
         CurrentTurnText.setVisible(false);
         mainGamePlayAgainButton.setVisible(true);
         mainGamePlayAgainButton.setDisable(false);
         switch (gameResult) {
-            case 0:
+            case 0 -> {
                 mainGameTitleText.setText("It's a draw!");
                 System.out.println("Game ended in draw");
                 System.out.println("Player 1 took " + player1TotalTokens + " turns");
                 System.out.println("Player 2 took " + player2TotalTokens + " turns");
-                break;
-            case 1:
+            }
+            case 1 -> {
                 mainGameTitleText.setText("Player 1 wins!");
                 System.out.println("Game ended in player 1 victory");
                 System.out.println("Player 1 took " + player1TotalTokens + " turns");
                 System.out.println("Player 2 took " + player2TotalTokens + " turns");
-                break;
-            case 2:
+            }
+            case 2 -> {
                 mainGameTitleText.setText("Player 2 wins!");
                 System.out.println("Game ended in player 2 victory");
                 System.out.println("Player 1 took " + player1TotalTokens + " turns");
                 System.out.println("Player 2 took " + player2TotalTokens + " turns");
-                break;
+            }
         }
     }
+
+    /**
+     * Cleans up the variables used during a game,
+     * and resets any strings that have been altered
+     */
     public void cleanup(){
         System.out.println("Cleaning up!...");
         setLowestPlayableRow(-1);
