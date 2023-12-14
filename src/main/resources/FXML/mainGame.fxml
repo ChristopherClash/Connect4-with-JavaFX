@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="VBox" alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.connect4.connect4javafx.Connect4">
+<VBox fx:id="VBox" alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.connect4.connect4javafx.Connect4MainGame">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -49,10 +49,10 @@
         </rowConstraints>
         <Button fx:id="Column0Button" alignment="CENTER" mnemonicParsing="false" onAction="#column0ButtonPress" text="Select" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
         <Button fx:id="Column1Button" alignment="CENTER" mnemonicParsing="false" onAction="#column1ButtonPress" text="Select" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-        <Button fx:id="Column2Button" alignment="CENTER" mnemonicParsing="false" onAction="#Column2ButtonPressed" text="Select" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-        <Button fx:id="Column3Button" alignment="CENTER" mnemonicParsing="false" onAction="#Column3ButtonPressed" text="Select" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-        <Button fx:id="Column4Button" alignment="CENTER" mnemonicParsing="false" onAction="#Column4ButtonPressed" text="Select" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-        <Button fx:id="Column5Button" alignment="CENTER" mnemonicParsing="false" onAction="#Column5ButtonPressed" text="Select" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-        <Button fx:id="Column6Button" alignment="CENTER" mnemonicParsing="false" onAction="#Column6ButtonPressed" text="Select" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column2Button" alignment="CENTER" mnemonicParsing="false" onAction="#column2ButtonPress" text="Select" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column3Button" alignment="CENTER" mnemonicParsing="false" onAction="#column3ButtonPress" text="Select" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column4Button" alignment="CENTER" mnemonicParsing="false" onAction="#column4ButtonPress" text="Select" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column5Button" alignment="CENTER" mnemonicParsing="false" onAction="#column5ButtonPress" text="Select" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+        <Button fx:id="Column6Button" alignment="CENTER" mnemonicParsing="false" onAction="#column6ButtonPress" text="Select" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
     </GridPane>
 </VBox>

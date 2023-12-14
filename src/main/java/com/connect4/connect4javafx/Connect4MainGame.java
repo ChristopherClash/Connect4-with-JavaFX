@@ -1,5 +1,4 @@
 package com.connect4.connect4javafx;
-
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,12 +9,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Connect4 extends Application {
+public class Connect4MainGame extends Application {
     public static final int WINDOW_HEIGHT = 900;
     public static final int WINDOW_WIDTH = 800;
     public static final int NO_OF_COLUMNS = 7;
@@ -23,14 +21,12 @@ public class Connect4 extends Application {
     public static final String GAME_TITLE = "Connect-4";
     public Text mainGameInvalidMoveText;
     public Button mainGamePlayAgainButton;
-
     private int selectedColumn;
     private int lowestPlayableRow = -1;
     private int player1TotalTokens = 0;
     private int player2TotalTokens = 0;
-    private final int[][] mainGameGridPaneArray = new int[NO_OF_COLUMNS][NO_OF_ROWS];
+    private final int[][] board = new int[NO_OF_ROWS][NO_OF_COLUMNS];
     private String currentPlayer = "Player1";
-
     public GridPane MainGameGridPane;
     public Text CurrentTurnText;
     public Button Column0Button;
@@ -42,6 +38,8 @@ public class Connect4 extends Application {
     public Button Column6Button;
     public Text mainGameTitleText;
     public javafx.scene.layout.VBox VBox;
+    private final ComputerPlayer computerPlayer = new ComputerPlayer("computerPlayer", Color.RED, 2);
+    private final Player humanPlayer = new Player("humanPlayer", Color.BLUE, 1);
 
     @Override
     public void start(Stage stage) {
@@ -63,61 +61,61 @@ public class Connect4 extends Application {
      * Initialise the game array, filling each slot with a placeholder 0.
      */
     private void initialiseArray(){
-        for (int i = 0; i < NO_OF_COLUMNS; i++){
-            for (int j = 0; j < NO_OF_ROWS; j++){
-                mainGameGridPaneArray[i][j] = 0;
+        for (int i = 0; i < NO_OF_ROWS; i++){
+            for (int j = 0; j < NO_OF_COLUMNS; j++){
+                board[i][j] = 0;
             }
         }
     }
 
     /**
      * Draws a circle at the given column, row in the given colour.
-     * @param currentPlayer - string representing the current player, either "player1" or "player2"
-     * @param playerColour - Color object, blue for player 1 and red for player 2
-     * @param currentPlayerTotalTokens - total number of tokens played so far by that player
-     * @param column - current column for token placement
-     * @param row - current row for token placement
+     *
+     * @param totalTokens              - total number of tokens played so far by that player
+     * @param column                   - current column for token placement
+     * @param row                      - current row for token placement
      */
-    private void createCircleAtNode(String currentPlayer, Color playerColour, int currentPlayerTotalTokens, int column, int row){
+    private void createCircleAtNode(int totalTokens, String playerName, int column, int row, Color playerColour) {
         Circle circleToken = new Circle(50);
         circleToken.setFill(playerColour);
-        circleToken.setId(currentPlayer + "Token" + currentPlayerTotalTokens);
-        MainGameGridPane.add(circleToken,column, row);
+        circleToken.setId(playerName + "Token" + totalTokens);
+        MainGameGridPane.add(circleToken, column, row);
     }
 
 
     /**
      *
      */
-    private void takeTurn(){
+    private void takeTurn(Player player) {
         mainGameInvalidMoveText.setVisible(false);
-        int column = getSelectedColumn();
-        setLowestPlayableRow(findLowestPlayableRow(column));
-        int row = getLowestPlayableRow();
-        String currentPlayer = getCurrentPlayer();
-        if (row != -1) {
-            if (currentPlayer.equals("Player1")) {
-                int player1TotalTokens = getPlayer1TotalTokens();
-                createCircleAtNode("Player1", Color.BLUE, player1TotalTokens, column, row);
-                setPlayer1TotalTokens(player1TotalTokens + 1);
-                mainGameGridPaneArray[column][row - 1] = 1;
-                setCurrentPlayer("Player2");
-                CurrentTurnText.setText(("It's Player 2's turn..."));
-            } else if (currentPlayer.equals("Player2")){
-                int player2TotalTokens = getPlayer2TotalTokens();
-                createCircleAtNode("Player2", Color.RED, player2TotalTokens, column, row);
-                setPlayer2TotalTokens(player2TotalTokens + 1);
-                mainGameGridPaneArray[column][row - 1] = 2;
-                setCurrentPlayer("Player1");
-                CurrentTurnText.setText(("It's Player 1's turn..."));
-            }
-            //Only begin checking for met win conditions once player 1 has placed their fourth token
-            if (getPlayer1TotalTokens() >= 4){
-                checkGameWin();
-            }
+        if (player == humanPlayer){
+            int column = getSelectedColumn();
+            int row = findLowestPlayableRow(column);
+            createCircleAtNode(player.getTotalTokens(), player.getPlayerName(), column, row, player.getPlayerColor());
+            player.setTotalTokens(player.getTotalTokens() +1);
+            board[row - 1][column] = 1;
+            switchPlayerTurn(player);
+        } else if (player == computerPlayer){
+            int column = computerPlayer.takeTurn(board);
+            int row = findLowestPlayableRow(column);
+            createCircleAtNode(player.getTotalTokens(), player.getPlayerName(), column, row, player.getPlayerColor());
+            player.setTotalTokens(player.getTotalTokens() + 1);
+            board[row - 1][column] = 2;
+            switchPlayerTurn(player);
+        }
+        if (humanPlayer.getTotalTokens() >= 4) {
+            checkGameWin();
+        }
+    }
+
+    private void switchPlayerTurn(Player player) {
+        if (player == humanPlayer) {
+            setCurrentPlayer(computerPlayer.getPlayerName());
+            CurrentTurnText.setText("It's Player 2's turn...");
         } else {
-            mainGameInvalidMoveText.setVisible(true);
-            mainGameInvalidMoveText.setText("Error - that column is full!");}
+            setCurrentPlayer(humanPlayer.getPlayerName());
+            CurrentTurnText.setText("It's Player 1's turn...");
+        }
     }
 
     /**
@@ -127,7 +125,7 @@ public class Connect4 extends Application {
      */
     private int findLowestPlayableRow(int selectedColumn) {
         for (int currentRow = MainGameGridPane.getRowCount() - 1; currentRow > 0; currentRow--) {
-            if (mainGameGridPaneArray[selectedColumn][currentRow - 1] == 0){
+            if (board[currentRow - 1][selectedColumn] == 0){
                 return currentRow;
             }
         }
@@ -164,10 +162,10 @@ public class Connect4 extends Application {
      * @return true if there are no empty slots (i.e. slots containing 0) in the array,
      * return false
      */
-    private boolean checkDraw(){
-        int[][] gameArray = getMainGameGridPaneArray();
-        for (int i = 0; i < NO_OF_COLUMNS; i++){
-            for (int j = 0; j < NO_OF_ROWS; j++){
+    public boolean checkDraw(){
+        int[][] gameArray = getBoard();
+        for (int i = 0; i < NO_OF_ROWS; i++){
+            for (int j = 0; j < NO_OF_COLUMNS; j++){
                 if (gameArray[i][j] == 0){
                     return false;
                 }
@@ -182,13 +180,13 @@ public class Connect4 extends Application {
      * @return 1 if player 1 has a winning row, or 2 if player two has a winning row.
      * If neither has won return 0.
      */
-    private int checkRows(){
-        int[][] gameArray = getMainGameGridPaneArray();
+    public int checkRows(){
+        int[][] gameArray = getBoard();
         for (int rowNo = 0; rowNo < NO_OF_ROWS; rowNo++){
             for (int columnNo = 0; columnNo < NO_OF_COLUMNS - 3; columnNo++){
                 Set<Integer> checkRowSet = new HashSet<>();
                 for (int offset = 0; offset < 4; offset++){
-                    checkRowSet.add(gameArray[columnNo + offset][rowNo]);
+                    checkRowSet.add(gameArray[rowNo][columnNo + offset]);
                 }
                 if (checkRowSet.size() == 1){
                     if (checkRowSet.contains(1)){
@@ -208,13 +206,13 @@ public class Connect4 extends Application {
      * @return 1 if player 1 has a winning column, or 2 if player two has a winning column.
      * If neither has won return 0.
      */
-    private int checkColumns() {
-        int[][] gameArray = getMainGameGridPaneArray();
+    public int checkColumns() {
+        int[][] gameArray = getBoard();
         for (int columnNo = 0; columnNo < NO_OF_COLUMNS; columnNo++){
             for (int rowNo = NO_OF_ROWS - 1; rowNo >= NO_OF_ROWS/2 ; rowNo--){
                 Set<Integer> checkColumnSet = new HashSet<>();
                 for (int offset = 0; offset < 4; offset++){
-                    checkColumnSet.add(gameArray[columnNo][rowNo - offset]);
+                    checkColumnSet.add(gameArray[rowNo - offset][columnNo]);
                 }
                 if (checkColumnSet.size() == 1){
                     if (checkColumnSet.contains(1)){
@@ -235,7 +233,7 @@ public class Connect4 extends Application {
      *If neither has won return 0.
      */
     private int checkDiagonals(){
-        int[][] gameArray = getMainGameGridPaneArray();
+        int[][] gameArray = getBoard();
         int checkTopRightToBottomLeftResult = checkTopRightToBottomLeft(gameArray);
         int checkTopLeftToBottomRightResult = checkTopLeftToBottomRight(gameArray);
         if (checkTopLeftToBottomRightResult == 1 || checkTopRightToBottomLeftResult == 1){
@@ -258,7 +256,7 @@ public class Connect4 extends Application {
             for (int rowNo = 0; rowNo <= NO_OF_ROWS - 4; rowNo++){
                Set<Integer> checkCurrentDiagonalSet = new HashSet<>();
                for (int offset = 0; offset < 4; offset++) {
-                   checkCurrentDiagonalSet.add(gameArray[columnNo + offset][rowNo + offset]);
+                   checkCurrentDiagonalSet.add(gameArray[rowNo + offset][columnNo + offset]);
                }
                if (checkCurrentDiagonalSet.size() == 1){
                    if (checkCurrentDiagonalSet.contains(1)){
@@ -284,7 +282,7 @@ public class Connect4 extends Application {
             for (int rowNo = 0; rowNo <= NO_OF_ROWS - 4; rowNo++){
                 Set<Integer> checkCurrentDiagonalSet = new HashSet<>();
                 for (int offset = 0; offset < 4; offset++) {
-                    checkCurrentDiagonalSet.add(gameArray[columnNo - offset][rowNo + offset]);
+                    checkCurrentDiagonalSet.add(gameArray[rowNo + offset][columnNo - offset]);
                 }
                 if (checkCurrentDiagonalSet.size() == 1){
                     if (checkCurrentDiagonalSet.contains(1)){
@@ -312,20 +310,14 @@ public class Connect4 extends Application {
             case 0 -> {
                 mainGameTitleText.setText("It's a draw!");
                 System.out.println("Game ended in draw");
-                System.out.println("Player 1 took " + player1TotalTokens + " turns");
-                System.out.println("Player 2 took " + player2TotalTokens + " turns");
             }
             case 1 -> {
                 mainGameTitleText.setText("Player 1 wins!");
                 System.out.println("Game ended in player 1 victory");
-                System.out.println("Player 1 took " + player1TotalTokens + " turns");
-                System.out.println("Player 2 took " + player2TotalTokens + " turns");
             }
             case 2 -> {
                 mainGameTitleText.setText("Player 2 wins!");
                 System.out.println("Game ended in player 2 victory");
-                System.out.println("Player 1 took " + player1TotalTokens + " turns");
-                System.out.println("Player 2 took " + player2TotalTokens + " turns");
             }
         }
     }
@@ -353,46 +345,54 @@ public class Connect4 extends Application {
     private void mainGamePlayAgainButtonPressed() {
         cleanup();
     }
+
     @FXML
     private void column0ButtonPress() {
         setSelectedColumn(0);
-        takeTurn();
+        takeTurn(humanPlayer);
+        takeTurn(computerPlayer);
     }
 
     @FXML
     private void column1ButtonPress() {
         setSelectedColumn(1);
-        takeTurn();
+        takeTurn(humanPlayer);
+        takeTurn(computerPlayer);
     }
 
     @FXML
-    private void Column2ButtonPressed() {
+    private void column2ButtonPress() {
         setSelectedColumn(2);
-        takeTurn();
+        takeTurn(humanPlayer);
+        takeTurn(computerPlayer);
     }
 
     @FXML
-    private void Column3ButtonPressed() {
-       setSelectedColumn(3);
-       takeTurn();
+    private void column3ButtonPress() {
+        setSelectedColumn(3);
+        takeTurn(humanPlayer);
+        takeTurn(computerPlayer);
     }
 
     @FXML
-    private void Column4ButtonPressed() {
+    private void column4ButtonPress() {
         setSelectedColumn(4);
-        takeTurn();
+        takeTurn(humanPlayer);
+        takeTurn(computerPlayer);
     }
 
     @FXML
-    private void Column5ButtonPressed() {
-       setSelectedColumn(5);
-       takeTurn();
+    private void column5ButtonPress() {
+        setSelectedColumn(5);
+        takeTurn(humanPlayer);
+        takeTurn(computerPlayer);
     }
 
     @FXML
-    private void Column6ButtonPressed() {
+    private void column6ButtonPress() {
         setSelectedColumn(6);
-        takeTurn();
+        takeTurn(humanPlayer);
+        takeTurn(computerPlayer);
     }
 
     public String getCurrentPlayer(){
@@ -419,24 +419,17 @@ public class Connect4 extends Application {
         this.selectedColumn = selectedColumn;
     }
 
-    public int getPlayer1TotalTokens() {
-        return player1TotalTokens;
-    }
 
     public void setPlayer1TotalTokens(int player1TotalTokens) {
         this.player1TotalTokens = player1TotalTokens;
-    }
-
-    public int getPlayer2TotalTokens() {
-        return player2TotalTokens;
     }
 
     public void setPlayer2TotalTokens(int player2TotalTokens) {
         this.player2TotalTokens = player2TotalTokens;
     }
 
-    public int[][] getMainGameGridPaneArray() {
-        return mainGameGridPaneArray;
+    public int[][] getBoard() {
+        return board;
     }
 
     public static void main (String[] args){
