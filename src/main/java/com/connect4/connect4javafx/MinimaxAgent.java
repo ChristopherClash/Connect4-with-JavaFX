@@ -21,7 +21,7 @@ public class MinimaxAgent {
         int[] bestMove = new int[]{maximizingPlayer ? Integer.MIN_VALUE : Integer.MAX_VALUE, -1};
 
         if ((depth == 0) || (isGameOver(board))) {
-            return new int[]{evaluate(board), -1, -1};
+            return new int[]{evaluate(board), -1};
         }
 
         int playerValue = maximizingPlayer ? 2 : 1;
@@ -36,7 +36,7 @@ public class MinimaxAgent {
 
             if (isWinningMove(board, column, row - 1)) {
                 board[row - 1][column] = 0; // Undo the move
-                return new int[]{evaluate(board), column, row};
+                return new int[]{evaluate(board), column};
             }
 
             // !maximizingPlayer because it's the other player's turn
@@ -59,8 +59,6 @@ public class MinimaxAgent {
         }
         return bestMove;
     }
-
-
 
     private boolean isGameOver(int[][] board) {
         return checkGameWin(board) || checkDraw(board);
@@ -112,7 +110,6 @@ public class MinimaxAgent {
 
     private int evaluateForPlayer(int[][] board, int player) {
         int score = 0;
-
         score += evaluateLine(board, player);
         return score;
     }
@@ -261,7 +258,6 @@ public class MinimaxAgent {
         }
         return count >= 4;
     }
-
 
     private boolean checkDraw(int[][] board) {
         for (int column = 0; column < GameController.NO_OF_COLUMNS; column++) {
