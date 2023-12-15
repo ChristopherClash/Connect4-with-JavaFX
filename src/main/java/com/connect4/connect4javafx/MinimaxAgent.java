@@ -1,28 +1,32 @@
 package com.connect4.connect4javafx;
+
+import static com.connect4.connect4javafx.GameController.NO_OF_ROWS;
+
 public class MinimaxAgent {
-    int maxDepth = 5;
+    int maxDepth = 8;
+    int alpha = Integer.MIN_VALUE;
+    int beta = Integer.MAX_VALUE;
 
-    public int takeTurn(int[][] board) {
-        int[] bestMove = minimax(board, maxDepth, true);
-
-        if (bestMove != null) {
-            return bestMove[1];
+    public int[] takeTurn(int[][] board) {
+        int[] bestMove = minimax(board, maxDepth, true, alpha, beta);
+        if (bestMove[1] >= 0) {
+            return new int[]{findLowestPlayableRow(board, bestMove[1]), bestMove[1]};
+        } else {
+            System.out.println("No move found");
+            return new int[]{findLowestPlayableRow(board, 0), 0};
         }
-
-        // Default: choose the leftmost column
-        return 0;
     }
 
-    private int[] minimax(int[][] board, int depth, boolean maximizingPlayer) {
-        int[] bestMove = null;
+    private int[] minimax(int[][] board, int depth, boolean maximizingPlayer, int alpha, int beta) {
+        int[] bestMove = new int[]{maximizingPlayer ? Integer.MIN_VALUE : Integer.MAX_VALUE, -1};
 
-        if (depth == 0 || isGameOver(board)) {
-            return new int[]{evaluate(board), -1};
+        if ((depth == 0) || (isGameOver(board))) {
+            return new int[]{evaluate(board), -1, -1};
         }
 
         int playerValue = maximizingPlayer ? 2 : 1;
 
-        for (int column = 0; column < Connect4MainGame.NO_OF_COLUMNS; column++) {
+        for (int column = 0; column < GameController.NO_OF_COLUMNS; column++) {
             if (isColumnFull(board, column)) {
                 continue;
             }
@@ -32,21 +36,50 @@ public class MinimaxAgent {
 
             if (isWinningMove(board, column, row - 1)) {
                 board[row - 1][column] = 0; // Undo the move
-                return new int[]{evaluate(board), column};
+                return new int[]{evaluate(board), column, row};
             }
 
             // !maximizingPlayer because it's the other player's turn
-            int score = minimax(board, depth - 1, !maximizingPlayer)[0];
+            int score = minimax(board, depth - 1, !maximizingPlayer, alpha, beta)[0];
 
-            board[row -1][column] = 0; // Undo the move
+            board[row - 1][column] = 0; // Undo the move
 
-            if ((maximizingPlayer && (bestMove == null || score > bestMove[0])) ||
-                    (!maximizingPlayer && (bestMove == null || score < bestMove[0]))) {
-                bestMove = new int[]{score, column};
+            if ((maximizingPlayer && score > alpha) || (!maximizingPlayer && score < beta)) {
+                if (maximizingPlayer) {
+                    alpha = score;
+                } else {
+                    beta = score;
+                }
+                bestMove[0] = score;
+                bestMove[1] = column;
+            }
+            if (alpha >= beta) {
+                break;
             }
         }
-
         return bestMove;
+    }
+
+
+
+    private boolean isGameOver(int[][] board) {
+        return checkGameWin(board) || checkDraw(board);
+    }
+
+    private boolean checkGameWin(int[][] board) {
+        return checkRows(board) || checkColumns(board) || checkDiagonals(board);
+    }
+
+    private boolean checkDiagonals(int[][] board) {
+        return Connect4Game.checkDiagonals(board) == 2;
+    }
+
+    private boolean checkColumns(int[][] board) {
+        return Connect4Game.checkColumns(board) == 2;
+    }
+
+    private boolean checkRows(int[][] board) {
+        return Connect4Game.checkRows(board) == 2;
     }
 
     private boolean isColumnFull(int[][] board, int column) {
@@ -54,11 +87,12 @@ public class MinimaxAgent {
     }
 
     private int findLowestPlayableRow(int[][] board, int column) {
-        for (int currentRow = Connect4MainGame.NO_OF_ROWS - 1; currentRow > 0; currentRow--) {
-            if (board[currentRow - 1][column] == 0) {
-                return currentRow;
+        for (int row = NO_OF_ROWS - 1; row >= 0; row--) {
+            if (board[row][column] == 0) {
+                return row + 1;  // Return the row index (1-based) where the token can be placed
             }
         }
+        // If the column is full, return -1 or handle accordingly
         return -1;
     }
 
@@ -87,8 +121,8 @@ public class MinimaxAgent {
         int score = 0;
 
         // Evaluate rows
-        for (int row = 0; row < Connect4MainGame.NO_OF_ROWS; row++) {
-            for (int col = 0; col < Connect4MainGame.NO_OF_COLUMNS - 3; col++) {
+        for (int row = 0; row < GameController.NO_OF_ROWS; row++) {
+            for (int col = 0; col < GameController.NO_OF_COLUMNS - 3; col++) {
                 int value1 = board[row][col];
                 int value2 = board[row][col + 1];
                 int value3 = board[row][col + 2];
@@ -99,8 +133,8 @@ public class MinimaxAgent {
         }
 
         // Evaluate columns
-        for (int col = 0; col < Connect4MainGame.NO_OF_COLUMNS; col++) {
-            for (int row = 0; row < Connect4MainGame.NO_OF_ROWS - 3; row++) {
+        for (int col = 0; col < GameController.NO_OF_COLUMNS; col++) {
+            for (int row = 0; row < GameController.NO_OF_ROWS - 3; row++) {
                 int value1 = board[row][col];
                 int value2 = board[row + 1][col];
                 int value3 = board[row + 2][col];
@@ -111,8 +145,8 @@ public class MinimaxAgent {
         }
 
         // Evaluate diagonals
-        for (int col = 0; col <= Connect4MainGame.NO_OF_COLUMNS - 4; col++) {
-            for (int row = 0; row < Connect4MainGame.NO_OF_ROWS - 4; row++) {
+        for (int col = 0; col <= GameController.NO_OF_COLUMNS - 4; col++) {
+            for (int row = 0; row < GameController.NO_OF_ROWS - 4; row++) {
                 int value1 = board[row][col];
                 int value2 = board[row + 1][col + 1];
                 int value3 = board[row + 2][col + 2];
@@ -122,8 +156,8 @@ public class MinimaxAgent {
             }
         }
 
-        for (int col = Connect4MainGame.NO_OF_COLUMNS - 1; col >= 3; col--) {
-            for (int row = 0; row <= Connect4MainGame.NO_OF_ROWS - 4; row++) {
+        for (int col = GameController.NO_OF_COLUMNS - 1; col >= 3; col--) {
+            for (int row = 0; row <= GameController.NO_OF_ROWS - 4; row++) {
                 int value1 = board[row][col];
                 int value2 = board[row + 1][col - 1];
                 int value3 = board[row + 2][col - 2];
@@ -136,9 +170,6 @@ public class MinimaxAgent {
     }
 
     private int evaluatePosition(int a, int b, int c, int d, int player) {
-        int computerPlayer = 2; // RED
-        int humanPlayer = 1; // BLUE
-
         int score = 0;
 
         // Evaluate a position based on the number of computer player and human player tokens
@@ -172,10 +203,7 @@ public class MinimaxAgent {
             return true;
         }
 
-        if (checkDiagonals(board, column, row, piecePlayer)) {
-            return true;
-        }
-        return false;
+        return checkDiagonals(board, column, row, piecePlayer);
     }
 
     private boolean checkDiagonals(int[][] board, int column, int row, int piecePlayer) {
@@ -189,7 +217,7 @@ public class MinimaxAgent {
             int columnNext = column - i;
             int rowNext = row - i * rowDirection;
 
-            if (columnNext >= 0 && columnNext < Connect4MainGame.NO_OF_COLUMNS && rowNext >= 0 && rowNext < Connect4MainGame.NO_OF_ROWS && board[rowNext][columnNext] == piecePlayer) {
+            if (columnNext >= 0 && columnNext < GameController.NO_OF_COLUMNS && rowNext >= 0 && rowNext < GameController.NO_OF_ROWS && board[rowNext][columnNext] == piecePlayer) {
                 count++;
             } else {
                 break;
@@ -200,7 +228,7 @@ public class MinimaxAgent {
             int columnNext = column + i;
             int rowNext = row + i * rowDirection;
 
-            if (columnNext >= 0 && columnNext < Connect4MainGame.NO_OF_COLUMNS && rowNext >= 0 && rowNext < Connect4MainGame.NO_OF_ROWS && board[rowNext][columnNext] == piecePlayer) {
+            if (columnNext >= 0 && columnNext < GameController.NO_OF_COLUMNS && rowNext >= 0 && rowNext < GameController.NO_OF_ROWS && board[rowNext][columnNext] == piecePlayer) {
                 count++;
             } else {
                 break;
@@ -215,7 +243,7 @@ public class MinimaxAgent {
             count++;
         }
 
-        for (int i = column + 1; i < Connect4MainGame.NO_OF_COLUMNS && board[row][i] == piecePlayer; i++) {
+        for (int i = column + 1; i < GameController.NO_OF_COLUMNS && board[row][i] == piecePlayer; i++) {
             count++;
         }
 
@@ -228,18 +256,15 @@ public class MinimaxAgent {
             count++;
         }
 
-        for (int i = row; i < Connect4MainGame.NO_OF_ROWS && board[i][column] == piecePlayer; i++) {
+        for (int i = row; i < GameController.NO_OF_ROWS && board[i][column] == piecePlayer; i++) {
             count++;
         }
         return count >= 4;
     }
 
-    private boolean isGameOver(int[][] board){
-        return checkWin(board) || checkDraw(board);
-    }
 
     private boolean checkDraw(int[][] board) {
-        for (int column = 0; column < Connect4MainGame.NO_OF_COLUMNS; column++) {
+        for (int column = 0; column < GameController.NO_OF_COLUMNS; column++) {
             if (!isColumnFull(board, column)) {
                 return false;
             }
@@ -247,14 +272,4 @@ public class MinimaxAgent {
         return true;
     }
 
-    private boolean checkWin(int[][] board) {
-        for (int row = 0; row < Connect4MainGame.NO_OF_ROWS; row++) {
-            for (int col = 0; col < Connect4MainGame.NO_OF_COLUMNS; col++) {
-                if (isWinningMove(board, col, row)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 }

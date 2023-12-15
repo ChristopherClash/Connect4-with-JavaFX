@@ -4,15 +4,13 @@ import javafx.scene.paint.Color;
 
 public class ComputerPlayer extends Player{
     private final MinimaxAgent miniMaxAgent;
-    private int totalTokens;
-
-    public ComputerPlayer(String name, Color color, int playerNumber) {
-        super(name, color, playerNumber);
+    public ComputerPlayer(String name, Color color) {
+        super(name, color);
         this.miniMaxAgent = new MinimaxAgent();
-        this.totalTokens = 0;
+        this.setTotalTokens(0);
     }
 
-    public int takeTurn(int[][] board) {
+    public int[] takeTurn(int[][] board) {
         return miniMaxAgent.takeTurn(board);
     }
 }
