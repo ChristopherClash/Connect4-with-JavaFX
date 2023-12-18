@@ -238,10 +238,20 @@ public class GameController extends Application {
         takeTurns();
     }
 
+    /**
+     * Returns the number of columns.
+     *
+     * @return the number of columns
+     */
     public static int getNoOfColumns() {
         return NO_OF_COLUMNS;
     }
 
+    /**
+     * Returns the number of rows.
+     *
+     * @return the number of rows
+     */
     public int getNoOfRows() {
         return NO_OF_ROWS;
     }
