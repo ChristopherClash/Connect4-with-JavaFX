@@ -2,8 +2,6 @@ package com.connect4.connect4javafx;
 
 import javafx.scene.paint.Color;
 
-import static com.connect4.connect4javafx.GameController.NO_OF_ROWS;
-
 public abstract class Player {
     protected final String playerName;
     protected final Color playerColor;
@@ -48,7 +46,7 @@ public abstract class Player {
      *                 or -1 if the column is full
      */
     public int findLowestPlayableRow(int[][] board, int column) {
-        for (int row = NO_OF_ROWS - 1; row >= 0; row--) {
+        for (int row = Connect4Game.getNoOfRows() - 1; row >= 0; row--) {
             if (board[row][column] == 0) {
                 return row + 1;  // Return the row index (1-based) where the token can be placed
             }

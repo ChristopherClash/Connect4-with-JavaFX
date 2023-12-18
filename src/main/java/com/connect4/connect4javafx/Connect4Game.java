@@ -3,10 +3,10 @@ package com.connect4.connect4javafx;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.connect4.connect4javafx.GameController.*;
-
 public class Connect4Game {
-    private final int[][] board = new int[NO_OF_ROWS][NO_OF_COLUMNS];
+    private final int[][] board;
+    private static int noOfColumns;
+    private static int noOfRows;
     private final ComputerPlayer computerPlayer;
     private final HumanPlayer humanPlayer;
     private int selectedColumn;
@@ -16,6 +16,9 @@ public class Connect4Game {
         this.computerPlayer = computerPlayer;
         this.humanPlayer = humanPlayer;
         this.gameController = gameController;
+        noOfColumns = GameController.getNoOfColumns();
+        noOfRows = gameController.getNoOfRows();
+        board = new int[noOfRows][noOfColumns];
         initialiseArray();
     }
 
@@ -23,8 +26,8 @@ public class Connect4Game {
      * Initializes the game board array with zero in each index location.
      */
     private void initialiseArray(){
-        for (int i = 0; i < NO_OF_ROWS; i++){
-            for (int j = 0; j < NO_OF_COLUMNS; j++){
+        for (int i = 0; i < noOfRows; i++){
+            for (int j = 0; j < noOfColumns; j++){
                 board[i][j] = 0;
             }
         }
@@ -107,8 +110,8 @@ public class Connect4Game {
      */
     public boolean checkDraw(){
         int[][] gameArray = getBoard();
-        for (int i = 0; i < NO_OF_ROWS; i++){
-            for (int j = 0; j < NO_OF_COLUMNS; j++){
+        for (int i = 0; i < noOfRows; i++){
+            for (int j = 0; j < noOfColumns; j++){
                 if (gameArray[i][j] == 0){
                     return false;
                 }
@@ -124,8 +127,8 @@ public class Connect4Game {
      * If neither has won return 0.
      */
     public static int checkRows(int[][] board){
-        for (int rowNo = 0; rowNo < NO_OF_ROWS; rowNo++){
-            for (int columnNo = 0; columnNo < NO_OF_COLUMNS - 3; columnNo++){
+        for (int rowNo = 0; rowNo < noOfRows ; rowNo++){
+            for (int columnNo = 0; columnNo < noOfColumns - 3; columnNo++){
                 Set<Integer> checkRowSet = new HashSet<>();
                 for (int offset = 0; offset < 4; offset++){
                     checkRowSet.add(board[rowNo][columnNo + offset]);
@@ -149,8 +152,8 @@ public class Connect4Game {
      * If neither has won return 0.
      */
     public static int checkColumns(int[][] board) {
-        for (int columnNo = 0; columnNo < NO_OF_COLUMNS; columnNo++){
-            for (int rowNo = NO_OF_ROWS - 1; rowNo >= NO_OF_ROWS/2 ; rowNo--){
+        for (int columnNo = 0; columnNo < noOfColumns; columnNo++){
+            for (int rowNo = noOfRows - 1; rowNo >= noOfRows/2 ; rowNo--){
                 Set<Integer> checkColumnSet = new HashSet<>();
                 for (int offset = 0; offset < 4; offset++){
                     checkColumnSet.add(board[rowNo - offset][columnNo]);
@@ -196,8 +199,8 @@ public class Connect4Game {
      * Return 0 if neither has a winning diagonal
      */
     private static int checkTopLeftToBottomRight(int[][] gameArray) {
-        for (int columnNo = 0; columnNo <= NO_OF_COLUMNS - 4; columnNo++){
-            for (int rowNo = 0; rowNo <= NO_OF_ROWS - 4; rowNo++){
+        for (int columnNo = 0; columnNo <= noOfColumns - 4; columnNo++){
+            for (int rowNo = 0; rowNo <= noOfRows - 4; rowNo++){
                 Set<Integer> checkCurrentDiagonalSet = new HashSet<>();
                 for (int offset = 0; offset < 4; offset++) {
                     checkCurrentDiagonalSet.add(gameArray[rowNo + offset][columnNo + offset]);
@@ -222,8 +225,8 @@ public class Connect4Game {
      * 0 if neither player has a winning diagonal
      */
     private static int checkTopRightToBottomLeft(int[][] gameArray) {
-        for (int columnNo = NO_OF_COLUMNS - 1; columnNo >= 3; columnNo--){
-            for (int rowNo = 0; rowNo <= NO_OF_ROWS - 4; rowNo++){
+        for (int columnNo = noOfColumns - 1; columnNo >= 3; columnNo--){
+            for (int rowNo = 0; rowNo <= noOfRows - 4; rowNo++){
                 Set<Integer> checkCurrentDiagonalSet = new HashSet<>();
                 for (int offset = 0; offset < 4; offset++) {
                     checkCurrentDiagonalSet.add(gameArray[rowNo + offset][columnNo - offset]);
@@ -239,6 +242,14 @@ public class Connect4Game {
             }
         }
         return 0;
+    }
+
+    public static int getNoOfColumns() {
+        return noOfColumns;
+    }
+
+    public static int getNoOfRows() {
+        return noOfRows;
     }
 
     /**

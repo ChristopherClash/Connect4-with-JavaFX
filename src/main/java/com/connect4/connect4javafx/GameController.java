@@ -15,11 +15,11 @@ import javafx.util.Duration;
 import java.io.IOException;
 
 public class GameController extends Application {
-    public static final int WINDOW_HEIGHT = 900;
-    public static final int WINDOW_WIDTH = 800;
-    public static final int NO_OF_COLUMNS = 7;
-    public static final int NO_OF_ROWS = 6;
-    public static final String GAME_TITLE = "Connect-4";
+    private static final int WINDOW_HEIGHT = 900;
+    private static final int WINDOW_WIDTH = 800;
+    private static final int NO_OF_COLUMNS = 7;
+    private static final int NO_OF_ROWS = 6;
+    private static final String GAME_TITLE = "Connect-4";
     public Text mainGameInvalidMoveText;
     public Button mainGamePlayAgainButton;
     public GridPane mainGameGridPane;
@@ -236,6 +236,14 @@ public class GameController extends Application {
     private void column6ButtonPress() {
         connect4Game.setSelectedColumn(6);
         takeTurns();
+    }
+
+    public static int getNoOfColumns() {
+        return NO_OF_COLUMNS;
+    }
+
+    public int getNoOfRows() {
+        return NO_OF_ROWS;
     }
 
     /**

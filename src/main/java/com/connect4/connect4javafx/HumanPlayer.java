@@ -4,8 +4,6 @@ import javafx.scene.paint.Color;
 
 import java.util.Random;
 
-import static com.connect4.connect4javafx.GameController.NO_OF_COLUMNS;
-
 public class HumanPlayer extends Player{
     public HumanPlayer(String name, Color color){
         super(name, color);
@@ -21,7 +19,7 @@ public class HumanPlayer extends Player{
     @Override
     public int[] takeTurn(int[][] board) {
         Random random = new Random();
-        int selectedColumn = random.nextInt(NO_OF_COLUMNS);
+        int selectedColumn = random.nextInt();
         return new int[] {findLowestPlayableRow(board, selectedColumn), selectedColumn};
     }
 
