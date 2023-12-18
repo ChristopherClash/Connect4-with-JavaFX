@@ -26,25 +26,31 @@ public class Connect4Game {
         }
     }
 
-    public int takeTurn(Player player) {
+    public boolean takeTurn(Player player) {
         int[] move;
         if (player == humanPlayer){
             move = humanPlayer.takeTurn(board, selectedColumn);
-            gameController.createCircleAtNode(player, move[0], move[1]);
-            player.setTotalTokens(player.getTotalTokens() +1);
+            if (!isValidMove(move)){
+                return false;
+            }
+            gameController.createCircleAtNode(player, move[0], selectedColumn);
+            player.incrementTotalTokens();
             board[move[0] - 1][move[1]] = 1;
+            return true;
         } else if (player == computerPlayer){
             move = computerPlayer.takeTurn(board);
             gameController.createCircleAtNode(player, move[0], move[1]);
-            player.setTotalTokens(player.getTotalTokens() + 1);
+            player.incrementTotalTokens();
             board[move[0] - 1][move[1]] = 2;
+            return true;
         }
-        if (humanPlayer.getTotalTokens() >= 4) {
-            return checkGameWin();
-        }
-        return -1;
+        return false;
     }
-    private int checkGameWin() {
+
+    private boolean isValidMove(int[] move){
+        return !(move[0] == -1);
+    }
+    public int checkGameWin() {
         int checkColumnsResult = checkColumns(board);
         int checkRowsResult = checkRows(board);
         int checkDiagonalsResult = checkDiagonals(board);

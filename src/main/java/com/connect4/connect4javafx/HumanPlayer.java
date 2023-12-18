@@ -2,24 +2,26 @@ package com.connect4.connect4javafx;
 
 import javafx.scene.paint.Color;
 
-import static com.connect4.connect4javafx.GameController.NO_OF_ROWS;
+import java.util.Random;
 
 public class HumanPlayer extends Player{
     public HumanPlayer(String name, Color color){
         super(name, color);
     }
 
-    public int[] takeTurn(int[][] board, int selectedColumn){
-        return new int[]{findLowestPlayableRow(board, selectedColumn), selectedColumn};
+    @Override
+    public int[] takeTurn(int[][] board) {
+        Random random = new Random();
+        int selectedColumn = random.nextInt(8);
+        return new int[] {findLowestPlayableRow(board, selectedColumn), selectedColumn};
     }
 
-    private int findLowestPlayableRow(int[][] board, int column) {
-        for (int row = NO_OF_ROWS - 1; row >= 0; row--) {
-            if (board[row][column] == 0) {
-                return row + 1;  // Return the row index (1-based) where the token can be placed
-            }
-        }
-        // If the column is full, return -1 or handle accordingly
-        return -1;
+    public int[] takeTurn(int[][] board, int selectedColumn) {
+        int[] move = new int[] {findLowestPlayableRow(board, selectedColumn), selectedColumn};
+        if (findLowestPlayableRow(board, selectedColumn) == -1) {
+            return new int[] {-1, -1};
+        } else {
+        return move;
     }
+        }
 }

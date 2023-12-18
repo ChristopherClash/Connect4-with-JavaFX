@@ -1,4 +1,5 @@
 package com.connect4.connect4javafx;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +10,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
 import java.io.IOException;
 
 public class GameController extends Application {
@@ -30,9 +33,9 @@ public class GameController extends Application {
     public Button Column6Button;
     public Text mainGameTitleText;
     public javafx.scene.layout.VBox VBox;
-    private ComputerPlayer computerPlayer = new ComputerPlayer("computerPlayer", Color.RED);
-    private HumanPlayer humanPlayer = new HumanPlayer("humanPlayer", Color.BLUE);
-    private Connect4Game game = new Connect4Game(computerPlayer, humanPlayer, this);
+    private ComputerPlayer computerPlayer;
+    private HumanPlayer humanPlayer;
+    private Connect4Game connect4Game;
 
     @Override
     public void start(Stage stage) {
@@ -44,16 +47,35 @@ public class GameController extends Application {
             stage.setWidth(WINDOW_WIDTH);
             stage.setTitle(GAME_TITLE);
             stage.show();
+            GameController controller = loader.getController();
+            controller.initialise();
         } catch (IOException e) {
              System.out.println("Error fetching mainGame.fxml");
         }
+    }
+
+    private void initialise() {
+        computerPlayer = new ComputerPlayer("computerPlayer", Color.RED);
+        humanPlayer = new HumanPlayer("humanPlayer", Color.BLUE);
+        connect4Game = new Connect4Game(computerPlayer, humanPlayer, this);
+        takeComputerTurn();
+    }
+
+    private void takeComputerTurn() {
+        connect4Game.takeTurn(computerPlayer);
     }
 
     public void createCircleAtNode(Player player, int row, int column) {
         Circle circleToken = new Circle(50);
         circleToken.setFill(player.getPlayerColor());
         circleToken.setId(player.getPlayerName() + "Token" + player.getTotalTokens());
-        mainGameGridPane.add(circleToken, column, row);
+
+        // Check if mainGameGridPane is initialized before adding the circle
+        if (mainGameGridPane != null) {
+            mainGameGridPane.add(circleToken, column, row);
+        } else {
+            System.err.println("mainGameGridPane is null. Unable to add circle.");
+        }
     }
 
     /**
@@ -64,29 +86,38 @@ public class GameController extends Application {
         System.out.println("Cleaning up!...");
         humanPlayer = new HumanPlayer("humanPlayer", Color.BLUE);
         computerPlayer = new ComputerPlayer("computerPlayer", Color.RED);
-        game = new Connect4Game(computerPlayer, humanPlayer, this);
+        connect4Game = new Connect4Game(computerPlayer, humanPlayer, this);
         mainGameTitleText.setText(GAME_TITLE);
-        CurrentTurnText.setText(("It's Player 1's turn..."));
+        CurrentTurnText.setText(("It's the computer's turn..."));
         CurrentTurnText.setVisible(true);
         mainGameGridPane.getChildren().removeIf(Circle.class :: isInstance);
         mainGamePlayAgainButton.setVisible(false);
         mainGamePlayAgainButton.setDisable(true);
     }
 
-    private void takeTurns(){
-        int gameOverValue;
+    private void takeTurns() {
+        boolean turnSuccessful;
         mainGameInvalidMoveText.setVisible(false);
-        gameOverValue = game.takeTurn(humanPlayer);
-        if (gameOverValue != -1) {
-            showEndOfGame(gameOverValue);
+        turnSuccessful = connect4Game.takeTurn(humanPlayer);
+        if (!turnSuccessful) {
+            mainGameInvalidMoveText.setText("Invalid move. Please choose another column.");
+            mainGameInvalidMoveText.setVisible(true);
         } else {
-            CurrentTurnText.setText("It's Player 2's turn...");
-            gameOverValue = game.takeTurn(computerPlayer);
-            if (gameOverValue != -1) {
-                showEndOfGame(gameOverValue);
-            }
+        checkGameWin();
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+        pause.setOnFinished(event -> {takeComputerTurn();
+            checkGameWin();
+            CurrentTurnText.setText("It's your turn...");});
+        CurrentTurnText.setText("It's the computer's turn...");
+        pause.playFromStart();
         }
-        CurrentTurnText.setText("It's Player 1's turn...");
+    }
+
+    private void checkGameWin(){
+        int gameValue = connect4Game.checkGameWin();
+        if (gameValue != -1) {
+            showEndOfGame(gameValue);
+        }
     }
 
     private void showEndOfGame(int gameResult){
@@ -116,43 +147,43 @@ public class GameController extends Application {
 
     @FXML
     private void column0ButtonPress() {
-        game.setSelectedColumn(0);
+        connect4Game.setSelectedColumn(0);
         takeTurns();
     }
 
     @FXML
     private void column1ButtonPress() {
-        game.setSelectedColumn(1);
+        connect4Game.setSelectedColumn(1);
         takeTurns();
     }
 
     @FXML
     private void column2ButtonPress() {
-        game.setSelectedColumn(2);
+        connect4Game.setSelectedColumn(2);
         takeTurns();
     }
 
     @FXML
     private void column3ButtonPress() {
-        game.setSelectedColumn(3);
+        connect4Game.setSelectedColumn(3);
         takeTurns();
     }
 
     @FXML
     private void column4ButtonPress() {
-        game.setSelectedColumn(4);
+        connect4Game.setSelectedColumn(4);
         takeTurns();
     }
 
     @FXML
     private void column5ButtonPress() {
-        game.setSelectedColumn(5);
+        connect4Game.setSelectedColumn(5);
         takeTurns();
     }
 
     @FXML
     private void column6ButtonPress() {
-        game.setSelectedColumn(6);
+        connect4Game.setSelectedColumn(6);
         takeTurns();
     }
 

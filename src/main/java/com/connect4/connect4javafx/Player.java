@@ -2,11 +2,13 @@ package com.connect4.connect4javafx;
 
 import javafx.scene.paint.Color;
 
-public class Player {
+import static com.connect4.connect4javafx.GameController.NO_OF_ROWS;
 
-    private final String playerName;
-    private final Color playerColor;
-    private int totalTokens;
+public abstract class Player {
+
+    protected final String playerName;
+    protected final Color playerColor;
+    protected int totalTokens;
 
     public Player(String playerName, Color playerColor) {
         this.playerName = playerName;
@@ -26,7 +28,18 @@ public class Player {
         return totalTokens;
     }
 
-    public void setTotalTokens(int totalTokens) {
-        this.totalTokens = totalTokens;
+    public void incrementTotalTokens() {
+        totalTokens++;
+    }
+
+    public abstract int[] takeTurn(int[][] board);
+    public int findLowestPlayableRow(int[][] board, int column) {
+        for (int row = NO_OF_ROWS - 1; row >= 0; row--) {
+            if (board[row][column] == 0) {
+                return row + 1;  // Return the row index (1-based) where the token can be placed
+            }
+        }
+        // If the column is full, return -1
+        return -1;
     }
 }
