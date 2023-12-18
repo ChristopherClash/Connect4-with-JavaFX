@@ -18,6 +18,10 @@ public class Connect4Game {
         this.gameController = gameController;
         initialiseArray();
     }
+
+    /**
+     * Initializes the game board array with zero in each index location.
+     */
     private void initialiseArray(){
         for (int i = 0; i < NO_OF_ROWS; i++){
             for (int j = 0; j < NO_OF_COLUMNS; j++){
@@ -26,6 +30,14 @@ public class Connect4Game {
         }
     }
 
+    /**
+     * Takes a turn for the player.
+     * Checks if the move made was valid and asks player to make another move if not.
+     * Increments the number of tokens for each player after a successful respective move.
+     *
+     * @param  player The player taking the turn.
+     * @return       True if the turn was successful, false otherwise.
+     */
     public boolean takeTurn(Player player) {
         int[] move;
         if (player == humanPlayer){
@@ -47,9 +59,26 @@ public class Connect4Game {
         return false;
     }
 
+    /**
+     * Checks if the given move is valid.
+     * Checks if the row index is -1 (i.e. the column is full).
+     *
+     * @param  move  an array representing the move
+     * @return       true if the move is valid, false otherwise
+     */
     private boolean isValidMove(int[] move){
         return !(move[0] == -1);
     }
+
+    /**
+     * Determines if the game has been won by a player or if it is a draw.
+     *
+     * @return  An integer representing the result of the game:
+     *          - 1 if player 1 has won
+     *          - 2 if player 2 has won
+     *          - 0 if it is a draw
+     *          - -1 if no win conditions have been met
+     */
     public int checkGameWin() {
         int checkColumnsResult = checkColumns(board);
         int checkRowsResult = checkRows(board);
@@ -212,6 +241,11 @@ public class Connect4Game {
         return 0;
     }
 
+    /**
+     * Sets the selected column.
+     *
+     * @param  selectedColumn  the value to set as the selected column
+     */
     public void setSelectedColumn(int selectedColumn) {
         this.selectedColumn = selectedColumn;
     }
