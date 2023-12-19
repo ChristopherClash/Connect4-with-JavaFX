@@ -12,7 +12,8 @@ public class ComputerPlayer extends Player{
      * Generates a move based on the current state of the board and the selected column.
      * Calls the minimax algorithm to determine the best move to make.
      *
-     * @param  board            the current state of the game board
+     * @param  board            a 2D array representing the game board
+     *
      * @return                  an array representing the move to be made
      */
     @Override

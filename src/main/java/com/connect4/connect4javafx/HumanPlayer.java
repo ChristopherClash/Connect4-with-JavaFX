@@ -14,6 +14,7 @@ public class HumanPlayer extends Player{
      * findLowestPlayableRow is used to find the lowest playable row in the selected column.
      *
      * @param  board  a 2D array representing the current game board
+     *
      * @return        an array containing the row and column selected by the AI player
      */
     @Override
@@ -27,8 +28,9 @@ public class HumanPlayer extends Player{
      * Generates a move based on the current state of the board and the selected column.
      * findLowestPlayableRow is used to find the lowest playable row in the selected column.
      *
-     * @param  board            the current state of the game board
+     * @param  board            a 2D array representing the game board
      * @param  selectedColumn   the column selected by the player
+     *
      * @return                  an array representing the move to be made
      */
     public int[] takeTurn(int[][] board, int selectedColumn) {

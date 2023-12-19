@@ -39,6 +39,7 @@ public class Connect4Game {
      * Increments the number of tokens for each player after a successful respective move.
      *
      * @param  player The player taking the turn.
+     *
      * @return       True if the turn was successful, false otherwise.
      */
     public boolean takeTurn(Player player) {
@@ -67,6 +68,7 @@ public class Connect4Game {
      * Checks if the row index is -1 (i.e. the column is full).
      *
      * @param  move  an array representing the move
+     *
      * @return       true if the move is valid, false otherwise
      */
     private boolean isValidMove(int[] move){
@@ -105,6 +107,7 @@ public class Connect4Game {
     /**
      * Checks each array index, if a 0 is found then the board is not full,
      * so a draw has not been reached
+     *
      * @return true if there are no empty slots (i.e. slots containing 0) in the array,
      * return false
      */
@@ -123,6 +126,7 @@ public class Connect4Game {
 
     /**
      * Check if there are any winning rows.
+     *
      * @return 1 if player 1 has a winning row, or 2 if player two has a winning row.
      * If neither has won return 0.
      */
@@ -147,6 +151,7 @@ public class Connect4Game {
     }
 
     /**
+     * Check if there are any winning columns.
      *
      * @return 1 if player 1 has a winning column, or 2 if player two has a winning column.
      * If neither has won return 0.
@@ -172,9 +177,10 @@ public class Connect4Game {
     }
 
     /**
+     * Check if there are any winning diagonals. Calls checkTopRightToBottomLeft and checkTopLeftToBottomRight
      *
      * @return 1 if player 1 has a winning diagonal, or 2 if player two has a winning diagonal.
-     *If neither has won return 0.
+     * If neither has won return 0.
      */
     public static int checkDiagonals(int[][] board) {
         int checkTopRightToBottomLeftResult = checkTopRightToBottomLeft(board);
@@ -193,8 +199,10 @@ public class Connect4Game {
     }
 
     /**
+     * Checks for winning diagonals in the top left to bottom right direction,
      *
      * @param gameArray the array of the game board
+     *
      * @return 1 if player 1 has a winning diagonal, 2 if player 2 has a winning diagonal
      * Return 0 if neither has a winning diagonal
      */
@@ -219,8 +227,10 @@ public class Connect4Game {
     }
 
     /**
-     * Checks for winning diagonals in the top right to bottom left direction, (i.e. 2 o'clock to 7 o'clock direction)
+     * Checks for winning diagonals in the top right to bottom left direction,
+     *
      * @param gameArray the array of the game board
+     *
      * @return 1 of player 1 has met a winning diagonal, 2 if player 2 has a winning diagonal.
      * 0 if neither player has a winning diagonal
      */
@@ -244,10 +254,20 @@ public class Connect4Game {
         return 0;
     }
 
+    /**
+     * Returns the number of columns
+     *
+     * @return the number of columns
+     */
     public static int getNoOfColumns() {
         return noOfColumns;
     }
 
+    /**
+     * Returns the number of rows
+     *
+     * @return the number of rows
+     */
     public static int getNoOfRows() {
         return noOfRows;
     }

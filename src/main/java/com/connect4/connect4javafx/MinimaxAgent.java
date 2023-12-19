@@ -12,6 +12,7 @@ public class MinimaxAgent {
      * If no move is found, returns a move using a random column.
      *
      * @param  board            the current state of the game board
+     *
      * @return                  an array representing the move to be made
      */
     public int[] takeTurn(int[][] board) {
@@ -34,6 +35,7 @@ public class MinimaxAgent {
      * @param  maximizingPlayer   true if the current player is maximizing, false otherwise
      * @param  alpha              the best value for the maximizing player
      * @param  beta               the best value for the minimizing player
+     *
      * @return                    an array containing the score and the column of the best move
      */
     private int[] minimax(int[][] board, int depth, boolean maximizingPlayer, int alpha, int beta) {
@@ -88,7 +90,8 @@ public class MinimaxAgent {
     /**
      * Determines whether the game is over based on the current state of the board.
      *
-     * @param  board  the current state of the game board
+     * @param  board  a 2D array representing the game board
+     *
      * @return true if the game is over, false otherwise
      */
     private boolean isGameOver(int[][] board) {
@@ -100,6 +103,7 @@ public class MinimaxAgent {
      * Checks the three possible win conditions: rows, columns, and diagonals.
      *
      * @param  board  a 2D array representing the game board
+     *
      * @return        true if the game is won, false otherwise
      */
     private boolean checkGameWin(int[][] board) {
@@ -111,7 +115,8 @@ public class MinimaxAgent {
      * 2 is used in the array to indicate that the computer has won.
      * If 2 returned by Connect4Game.checkDiagonals, the computer has won.
      *
-     * @param  board  the game board represented as a 2D array
+     * @param  board  a 2D array representing the game board
+     *
      * @return        true if the computer has won, false otherwise
      */
     private boolean checkDiagonals(int[][] board) {
@@ -123,7 +128,8 @@ public class MinimaxAgent {
      * 2 is used in the array to indicate that the computer has won.
      * If 2 returned by Connect4Game.checkColumns, the computer has won.
      *
-     * @param  board  the game board represented as a 2D array
+     * @param  board  a 2D array representing the game board
+     *
      * @return        true if the computer has won, false otherwise
      */
     private boolean checkColumns(int[][] board) {
@@ -135,7 +141,8 @@ public class MinimaxAgent {
      * 2 is used in the array to indicate that the computer has won.
      * If 2 returned by Connect4Game.checkRows, the computer has won.
      *
-     * @param  board    the game board represented as a 2D array
+     * @param  board    a 2D array representing the game board
+     *
      * @return          true if the computer has won, false otherwise
      */
     private boolean checkRows(int[][] board) {
@@ -145,8 +152,9 @@ public class MinimaxAgent {
     /**
      * Checks if a specific column in the board is full.
      *
-     * @param  board   the game board represented as a 2D array
+     * @param  board   a 2D array representing the game board
      * @param  column  the column index to check
+     *
      * @return         true if the column is full, false otherwise
      */
     private boolean isColumnFull(int[][] board, int column) {
@@ -156,9 +164,10 @@ public class MinimaxAgent {
     /**
      * Finds the lowest playable row for a given column in the board.
      *
-     * @param  board   the 2D array representing the game board
+     * @param  board   a 2D array representing the game board
      * @param  column  the column index to check
-     * @return         the lowest playable row for the given column
+     *
+     * @return         the lowest playable row for the given column or -1 if the column is full
      */
     private int findLowestPlayableRow(int[][] board, int column) {
         for (int row = Connect4Game.getNoOfRows() - 1; row >= 0; row--) {
@@ -173,7 +182,8 @@ public class MinimaxAgent {
     /**
      * Evaluation function for the current board position
      *
-     * @param  board  the game board represented as a two-dimensional array
+     * @param  board  a 2D array representing the game board
+     *
      * @return        the score representing the evaluation of the board position
      */
     private int evaluate(int[][] board) {
@@ -193,8 +203,9 @@ public class MinimaxAgent {
     /**
      * Evaluates the given board for the specified player and returns the score.
      *
-     * @param  board   the 2D array representing the game board
+     * @param  board   a 2D array representing the game board
      * @param  player  the player for whom the board is being evaluated
+     *
      * @return         the score of the evaluation
      */
     private int evaluateForPlayer(int[][] board, int player) {
@@ -206,8 +217,9 @@ public class MinimaxAgent {
     /**
      * Evaluates the given game board for the specified player and returns the score.
      *
-     * @param  board  the game board represented as a 2D array
+     * @param  board  a 2D array representing the game board
      * @param  player the player for whom the board is evaluated
+     *
      * @return        the score obtained by the player after evaluating the board
      */
     private int evaluateLine(int[][] board, int player) {
@@ -271,6 +283,7 @@ public class MinimaxAgent {
      * @param  c     the value of the third token
      * @param  d     the value of the fourth token
      * @param  player  the player whose tokens are being evaluated
+     *
      * @return          the score of the position
      */
     private int evaluatePosition(int a, int b, int c, int d, int player) {
@@ -299,9 +312,10 @@ public class MinimaxAgent {
     /**
      * Determines whether a move is a winning move on the game board.
      *
-     * @param  board   the game board represented as a 2D array
+     * @param  board   a 2D array representing the game board
      * @param  column  the column of the move
      * @param  row     the row of the move
+     *
      * @return         true if the move is a winning move, false otherwise
      */
     private boolean isWinningMove(int[][] board, int column, int row) {
@@ -321,10 +335,11 @@ public class MinimaxAgent {
     /**
      * Checks if there is a win on either of the diagonals of the game board.
      *
-     * @param  board         the game board represented as a 2D array
+     * @param  board         a 2D array representing the game board
      * @param  column        the column index of the last piece placed
      * @param  row           the row index of the last piece placed
      * @param  piecePlayer   the player ID of the last piece placed
+     *
      * @return               true if there is a win on either of the diagonals, false otherwise
      */
     private boolean checkDiagonals(int[][] board, int column, int row, int piecePlayer) {
@@ -335,11 +350,12 @@ public class MinimaxAgent {
      * Checks if there is a diagonal line of 4 pieces of the same player on the game board,
      * starting from the given column and row, and moving in the given row direction.
      *
-     * @param  board         the game board represented as a 2D array of integers
+     * @param  board         a 2D array representing the game board
      * @param  column        the starting column index
      * @param  row           the starting row index
      * @param  rowDirection  the direction to move in rows (1 for down, -1 for up)
      * @param  piecePlayer   the player's piece to check for
+     *
      * @return               true if there is a diagonal line of 4 pieces, false otherwise
      */
     private boolean checkDiagonal(int[][] board, int column, int row, int rowDirection, int piecePlayer) {
@@ -373,10 +389,11 @@ public class MinimaxAgent {
      * Checks if there are at least 4 consecutive pieces of the same player
      * horizontally on the game board.
      *
-     * @param  board         the game board represented as a 2D array
+     * @param  board         a 2D array representing the game board
      * @param  column        the column index of the piece being checked
      * @param  row           the row index of the piece being checked
      * @param  piecePlayer   the player identifier for the piece being checked
+     *
      * @return               true if there are at least 4 consecutive pieces of the same player horizontally, false otherwise
      */
     private boolean checkHorizontal(int[][] board, int column, int row, int piecePlayer) {
@@ -395,10 +412,11 @@ public class MinimaxAgent {
     /**
      * Checks if there are four consecutive pieces of the same player vertically in the board.
      *
-     * @param  board         the game board represented as a 2D array of integers
+     * @param  board         a 2D array representing the game board
      * @param  column        the column index of the current piece
      * @param  row           the row index of the current piece
      * @param  piecePlayer   the player identifier of the current piece
+     *
      * @return               true if there are four consecutive pieces vertically, false otherwise
      */
     private boolean checkVertical(int[][] board, int column, int row, int piecePlayer) {
@@ -416,7 +434,8 @@ public class MinimaxAgent {
     /**
      * Checks if the game board is in a draw state.
      *
-     * @param  board  the game board represented as a 2D array
+     * @param  board  a 2D array representing the game board
+     *
      * @return        true if the game board is in a draw state, false otherwise
      */
     private boolean checkDraw(int[][] board) {

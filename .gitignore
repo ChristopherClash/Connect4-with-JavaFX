@@ -13,6 +13,10 @@
 .idea/**/shelf
 .idea
 
+# JavaDoc
+*.html
+*.js
+
 # AWS User-specific
 .idea/**/aws.xml
 
@@ -161,3 +165,15 @@ buildNumber.properties
 .classpath
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java,maven
+stylesheet.css
+script-dir/jquery-ui.min.css
+resources/x.png
+resources/glass.png
+link.svg
+legal/LICENSE
+legal/jqueryUI.md
+legal/jquery.md
+legal/ASSEMBLY_EXCEPTION
+legal/ADDITIONAL_LICENSE_INFO
+element-list
+copy.svg

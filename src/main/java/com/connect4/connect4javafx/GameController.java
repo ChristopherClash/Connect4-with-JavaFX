@@ -132,8 +132,7 @@ public class GameController extends Application {
     }
 
     /**
-     * Checks if the game has been won and shows the end of the game if it has.
-     * -1 is returned if the game has not ended yet.
+     * Checks if the game has been won (gameValue != -1), if so, shows the end of the game.
      */
     private void checkGameWin(){
         int gameValue = connect4Game.checkGameWin();
