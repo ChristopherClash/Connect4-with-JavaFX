@@ -19,7 +19,7 @@
       </font>
    </Text>
    <Button fx:id="mainGamePlayAgainButton" mnemonicParsing="false" onAction="#mainGamePlayAgainButtonPressed" text="Play again" visible="false" />
-   <Text fx:id="CurrentTurnText" strokeType="OUTSIDE" strokeWidth="0.0" text="It's Player 1's turn...">
+   <Text fx:id="CurrentTurnText" strokeType="OUTSIDE" strokeWidth="0.0" text="It's your turn...">
       <font>
          <Font name="Calibri" size="26.0" />
       </font></Text>
